@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "yarnrc",
+  "scopeName": "source.yarnrc",
+  "fileTypes": [".yarnrc.yml", ".yarnrc.yaml"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#keyvalue" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.yarnrc",
+      "match": "^\\s*#.*$"
+    },
+    "keyvalue": {
+      "patterns": [
+        {
+          "match": "^([a-zA-Z][a-zA-Z0-9]*)\\s*(:)\\s*(.*)$",
+          "captures": {
+            "1": { "name": "keyword.other.key.yarnrc" },
+            "2": { "name": "punctuation.separator.key-value.yarnrc" },
+            "3": { "name": "string.unquoted.value.yarnrc" }
+          }
+        },
+        {
+          "match": "^(\\s+- )(.*)$",
+          "captures": {
+            "1": { "name": "punctuation.definition.list.yarnrc" },
+            "2": { "name": "string.unquoted.value.yarnrc" }
+          }
+        }
+      ]
+    }
+  }
+}

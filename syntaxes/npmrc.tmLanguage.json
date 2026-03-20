@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "npmrc",
+  "scopeName": "source.npmrc",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#keyvalue" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.npmrc",
+      "match": "^\\s*#.*$"
+    },
+    "keyvalue": {
+      "patterns": [
+        {
+          "match": "^([a-zA-Z0-9_:@/-]+)\\s*(=)\\s*(.*)$",
+          "captures": {
+            "1": { "name": "keyword.other.key.npmrc" },
+            "2": { "name": "punctuation.separator.key-value.npmrc" },
+            "3": { "name": "string.unquoted.value.npmrc" }
+          }
+        }
+      ]
+    }
+  }
+}

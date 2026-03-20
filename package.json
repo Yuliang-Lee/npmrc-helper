@@ -1,0 +1,87 @@
+{
+  "name": "npmrc-helper",
+  "displayName": "npmrc Helper",
+  "description": "Hover docs, auto-completion, and diagnostics for .npmrc (npm & pnpm) and .yarnrc.yml (Yarn Berry)",
+  "version": "0.1.0",
+  "publisher": "xlaoyu",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yuliang-Lee/npmrc-helper"
+  },
+  "homepage": "https://github.com/Yuliang-Lee/npmrc-helper#readme",
+  "bugs": {
+    "url": "https://github.com/Yuliang-Lee/npmrc-helper/issues"
+  },
+  "license": "MIT",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "keywords": [
+    "npm",
+    "npmrc",
+    "pnpm",
+    "yarn",
+    "yarnrc",
+    "config",
+    "hints",
+    "autocomplete"
+  ],
+  "icon": "images/icon.png",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "npmrc",
+        "aliases": ["npmrc", ".npmrc"],
+        "filenames": [".npmrc"],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "yarnrc",
+        "aliases": ["yarnrc", ".yarnrc.yml"],
+        "filenames": [".yarnrc.yml", ".yarnrc.yaml"],
+        "configuration": "./yarnrc-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "npmrc",
+        "scopeName": "source.npmrc",
+        "path": "./syntaxes/npmrc.tmLanguage.json"
+      },
+      {
+        "language": "yarnrc",
+        "scopeName": "source.yarnrc",
+        "path": "./syntaxes/yarnrc.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@typescript-eslint/parser": "^8.57.1",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^10.0.3",
+    "typescript": "^5.3.0"
+  }
+}

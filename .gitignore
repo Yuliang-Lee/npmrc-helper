@@ -1,0 +1,27 @@
+# Compiled output
+out/
+dist/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.vsix
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude AI local config
+.claude/
+
+# Editor
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test output
+.vscode-test/
