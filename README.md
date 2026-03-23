@@ -2,6 +2,7 @@
 
 [![VS Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/xlaoyu.npmrc-helper?label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=xlaoyu.npmrc-helper)
 [![VS Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/xlaoyu.npmrc-helper?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=xlaoyu.npmrc-helper)
+[![CI:test](https://github.com/Yuliang-Lee/npmrc-helper/actions/workflows/ci.yml/badge.svg)](https://github.com/Yuliang-Lee/npmrc-helper/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A VSCode extension that provides **IntelliSense** for package manager configuration files — hover documentation, auto-completion, and diagnostics — supporting:
