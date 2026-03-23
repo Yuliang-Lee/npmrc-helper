@@ -42,14 +42,25 @@
     "languages": [
       {
         "id": "npmrc",
-        "aliases": ["npmrc", ".npmrc"],
-        "filenames": [".npmrc"],
+        "aliases": [
+          "npmrc",
+          ".npmrc"
+        ],
+        "filenames": [
+          ".npmrc"
+        ],
         "configuration": "./language-configuration.json"
       },
       {
         "id": "yarnrc",
-        "aliases": ["yarnrc", ".yarnrc.yml"],
-        "filenames": [".yarnrc.yml", ".yarnrc.yaml"],
+        "aliases": [
+          "yarnrc",
+          ".yarnrc.yml"
+        ],
+        "filenames": [
+          ".yarnrc.yml",
+          ".yarnrc.yaml"
+        ],
         "configuration": "./yarnrc-language-configuration.json"
       }
     ],
@@ -70,18 +81,22 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile",
+    "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "lint": "eslint src",
     "package": "vsce package"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.19.37",
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
     "@vscode/test-electron": "^2.3.0",
     "eslint": "^10.0.3",
+    "glob": "^10.3.10",
+    "mocha": "^10.3.0",
     "typescript": "^5.3.0"
   }
 }

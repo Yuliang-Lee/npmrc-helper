@@ -210,6 +210,7 @@ export class NpmrcDiagnosticsProvider {
   }
 
   dispose(): void {
+    this.collection.clear();
     this.collection.dispose();
   }
 
@@ -318,6 +319,10 @@ export class NpmrcDiagnosticsProvider {
 
   clearDiagnostics(document: vscode.TextDocument): void {
     this.collection.delete(document.uri);
+  }
+
+  getDiagnostics(document: vscode.TextDocument): readonly vscode.Diagnostic[] {
+    return this.collection.get(document.uri) ?? [];
   }
 
   private isNpmrcDocument(document: vscode.TextDocument): boolean {

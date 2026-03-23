@@ -1,5 +1,9 @@
 # npmrc Helper
 
+[![VS Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/xlaoyu.npmrc-helper?label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=xlaoyu.npmrc-helper)
+[![VS Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/xlaoyu.npmrc-helper?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=xlaoyu.npmrc-helper)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A VSCode extension that provides **IntelliSense** for package manager configuration files — hover documentation, auto-completion, and diagnostics — supporting:
 
 - **`.npmrc`** — npm (v8 / v9 / v10 / v11) and pnpm (v10 / v11)
