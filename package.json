@@ -1,8 +1,8 @@
 {
   "name": "npmrc-helper",
   "displayName": "npmrc Helper",
-  "description": "Hover docs, auto-completion, and diagnostics for .npmrc (npm & pnpm) and .yarnrc.yml (Yarn Berry)",
-  "version": "0.1.0",
+  "description": "Hover docs, auto-completion, and diagnostics for .npmrc (npm & pnpm), pnpm-workspace.yaml (pnpm v11+), and .yarnrc.yml (Yarn Berry)",
+  "version": "0.2.0",
   "publisher": "xlaoyu",
   "engines": {
     "vscode": "^1.85.0"
@@ -29,6 +29,7 @@
     "npm",
     "npmrc",
     "pnpm",
+    "pnpm-workspace",
     "yarn",
     "yarnrc",
     "config",
@@ -62,6 +63,18 @@
           ".yarnrc.yaml"
         ],
         "configuration": "./yarnrc-language-configuration.json"
+      },
+      {
+        "id": "pnpm-workspace",
+        "aliases": [
+          "pnpm-workspace",
+          "pnpm-workspace.yaml"
+        ],
+        "filenames": [
+          "pnpm-workspace.yaml",
+          "pnpm-workspace.yml"
+        ],
+        "configuration": "./yarnrc-language-configuration.json"
       }
     ],
     "grammars": [
@@ -73,6 +86,11 @@
       {
         "language": "yarnrc",
         "scopeName": "source.yarnrc",
+        "path": "./syntaxes/yarnrc.tmLanguage.json"
+      },
+      {
+        "language": "pnpm-workspace",
+        "scopeName": "source.yaml",
         "path": "./syntaxes/yarnrc.tmLanguage.json"
       }
     ]

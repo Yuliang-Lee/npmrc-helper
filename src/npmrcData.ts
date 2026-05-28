@@ -31,9 +31,9 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: '_auth',
     default: 'null',
     type: 'null | String',
-    packageManager: ['npm'],
+    packageManager: ['npm', 'pnpm'],
     description:
-      'A base-64 encoded string representing the username and password combination (e.g. `dXNlcm5hbWU6cGFzc3dvcmQ=`). This is only used for basic authentication.\n\n> ⚠️ Prefer `_authToken` or registry-scoped credentials instead.',
+      'A base-64 encoded string representing the username and password combination (e.g. `dXNlcm5hbWU6cGFzc3dvcmQ=`). This is only used for basic authentication.\n\n> ⚠️ Prefer `_authToken` or registry-scoped credentials instead.\n\n> 🔒 Sensitive credential — keep in `.npmrc`, not in `pnpm-workspace.yaml`.',
   },
   {
     key: 'access',
@@ -74,9 +74,9 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'always-auth',
     default: 'false',
     type: 'Boolean',
-    packageManager: ['npm'],
+    packageManager: ['npm', 'pnpm'],
     description:
-      'Force npm to always require authentication when accessing the registry, even for `GET` requests.',
+      'Force npm/pnpm to always require authentication when accessing the registry, even for `GET` requests.',
   },
   {
     key: 'audit',
@@ -136,7 +136,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'ca',
     default: 'null',
     type: 'null | String | String[]',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'The Certificate Authority signing certificate trusted for SSL connections to the registry. Values must be in PEM format with newlines replaced by `\\n`.\n\nExample:\n```\nca="-----BEGIN CERTIFICATE-----\\nXXXX\\nXXXX\\n-----END CERTIFICATE-----"\n```\n\nUse `ca[]=` for multiple CAs.',
   },
@@ -169,7 +169,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'cafile',
     default: 'null',
     type: 'path',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'A path to a file containing one or multiple Certificate Authority signing certificates.',
   },
@@ -186,7 +186,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'cert',
     default: 'null',
     type: 'null | String',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     deprecated: true,
     description:
       '**Deprecated (npm v10+)**: Use registry-scoped `certfile` config instead.\n\nA client certificate in PEM format (newlines replaced with `\\n`) to pass when accessing the registry.',
@@ -499,7 +499,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'https-proxy',
     default: 'null',
     type: 'null | URL',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'A proxy to use for outgoing HTTPS requests. Also honored via `HTTPS_PROXY` or `https_proxy` environment variables.',
   },
@@ -679,7 +679,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'key',
     default: 'null',
     type: 'null | String',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     deprecated: true,
     description:
       '**Deprecated (npm v10+)**: Use registry-scoped `keyfile` config instead.\n\nA client key in PEM format to pass when accessing the registry.',
@@ -724,7 +724,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'local-address',
     default: 'undefined',
     type: 'IP Address',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'The IP address of the local interface to use when making connections to the npm registry.',
   },
@@ -785,7 +785,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'maxsockets',
     default: '15',
     type: 'Number',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'The maximum number of connections to use per origin (protocol/host/port combination).',
   },
@@ -820,7 +820,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'noproxy',
     default: '$NO_PROXY',
     type: 'String',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description: 'A comma-separated list of domain extensions for which a proxy should not be used.',
   },
 
@@ -1001,7 +1001,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'proxy',
     default: 'null',
     type: 'null | false | URL',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description:
       'A proxy to use for outgoing HTTP requests. Also honored via `HTTP_PROXY` or `http_proxy` environment variables.',
   },
@@ -1205,7 +1205,7 @@ const npmConfigs: NpmrcConfigEntry[] = [
     key: 'strict-ssl',
     default: 'true',
     type: 'Boolean',
-    packageManager: ['npm', 'pnpm'],
+    packageManager: ['npm'],
     description: 'Whether to perform SSL key validation when making requests to the registry via HTTPS.',
   },
 
@@ -1345,488 +1345,13 @@ const npmConfigs: NpmrcConfigEntry[] = [
   },
 ];
 
-// ─── pnpm-only configs ────────────────────────────────────────────────────────
-// Keys that live in .npmrc for pnpm v10 / v11 and are NOT shared with npm.
-// Reference: https://pnpm.io/npmrc
-
-const pnpmOnlyConfigs: NpmrcConfigEntry[] = [
-
-  // ── Store & Cache ────────────────────────────────────────────────────────────
-  {
-    key: 'store-dir',
-    default: 'Platform-dependent (~/.pnpm-store)',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description:
-      "The location where all packages are saved on disk. All projects share the same store.\n\nDefault locations:\n- Linux: `~/.local/share/pnpm/store`\n- macOS: `~/Library/pnpm/store`\n- Windows: `%LOCALAPPDATA%/pnpm/store`",
-  },
-  {
-    key: 'cache-dir',
-    default: 'Platform-dependent',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description:
-      "pnpm's cache directory (metadata, dlx cache).\n\nDefault locations:\n- Linux: `~/.cache/pnpm`\n- macOS: `~/Library/Caches/pnpm`\n- Windows: `%LOCALAPPDATA%/pnpm/cache`",
-  },
-  {
-    key: 'state-dir',
-    default: 'Platform-dependent',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'Directory for `pnpm-state.json` (used by the update checker).',
-  },
-  {
-    key: 'global-dir',
-    default: 'Platform-dependent',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'Directory to store global packages.',
-  },
-  {
-    key: 'global-bin-dir',
-    default: 'Platform-dependent',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'Target directory for global package executables.',
-  },
-  {
-    key: 'verify-store-integrity',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Verify file integrity in the store before linking to `node_modules`.',
-  },
-
-  // ── Modules ─────────────────────────────────────────────────────────────────
-  {
-    key: 'hoist',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, all dependencies are hoisted to `node_modules/.pnpm/node_modules`. Makes unlisted dependencies accessible to all packages inside `node_modules`.',
-  },
-  {
-    key: 'hoist-workspace-packages',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Symlink workspace packages into the virtual store.',
-  },
-  {
-    key: 'hoist-pattern',
-    default: '["*"]',
-    type: 'String[]',
-    packageManager: ['pnpm'],
-    description:
-      'Glob patterns controlling which packages are hoisted to `.pnpm/node_modules`.\n\nExample:\n```\nhoist-pattern[]=*types*\nhoist-pattern[]=*eslint*\n```',
-  },
-  {
-    key: 'public-hoist-pattern',
-    default: '[]',
-    type: 'String[]',
-    packageManager: ['pnpm'],
-    description:
-      'Glob patterns controlling which packages are hoisted to the **root** `node_modules`.\n\nExample:\n```\npublic-hoist-pattern[]=*eslint*\n```',
-  },
-  {
-    key: 'shamefully-hoist',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'Hoist all packages to the root `node_modules`. Equivalent to `public-hoist-pattern=*`.\n\n> ⚠️ Only use if you need compatibility with tools that expect a flat `node_modules`.',
-  },
-  {
-    key: 'modules-dir',
-    default: 'node_modules',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'The directory where dependencies are installed.',
-  },
-  {
-    key: 'node-linker',
-    default: 'isolated',
-    type: 'String',
-    packageManager: ['pnpm'],
-    validValues: ['isolated', 'hoisted', 'pnp'],
-    description:
-      'Defines the linker pnpm uses for installing Node.js packages.\n\n- `isolated` *(default)*: Dependencies are symlinked from a virtual store at `node_modules/.pnpm`.\n- `hoisted`: Flat `node_modules` similar to npm/yarn classic.\n- `pnp`: No `node_modules`; uses Plug\'n\'Play (Yarn Berry compatible).',
-  },
-  {
-    key: 'symlink',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'When `false`, pnpm creates a virtual store without any symlinks.',
-  },
-  {
-    key: 'virtual-store-dir',
-    default: 'node_modules/.pnpm',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'The directory with links to the store. All direct and indirect dependencies are linked here.',
-  },
-  {
-    key: 'package-import-method',
-    default: 'auto',
-    type: 'String',
-    packageManager: ['pnpm'],
-    validValues: ['auto', 'hardlink', 'copy', 'clone', 'clone-or-copy'],
-    description:
-      'Controls how packages are imported from the store.\n\n- `auto` *(default)*: Try cloning, fall back to hardlinking, then copying.\n- `hardlink`: Use hard links.\n- `copy`: Copy files.\n- `clone`: Use CoW clones (reflinks).',
-  },
-  {
-    key: 'modules-cache-max-age',
-    default: '10080',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Time (in minutes) to keep orphan packages in the `node_modules` cache. Default is 7 days.',
-  },
-
-  // ── Lockfile ─────────────────────────────────────────────────────────────────
-  {
-    key: 'lockfile',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `false`, pnpm will not read or write `pnpm-lock.yaml`.',
-  },
-  {
-    key: 'prefer-frozen-lockfile',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, if `pnpm-lock.yaml` satisfies `package.json`, a headless installation is performed — skipping dependency resolution.',
-  },
-  {
-    key: 'lockfile-include-tarball-url',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Add the full tarball URL to every entry in `pnpm-lock.yaml`.',
-  },
-
-  // ── Network ──────────────────────────────────────────────────────────────────
-  {
-    key: 'http-proxy',
-    default: 'null',
-    type: 'URL',
-    packageManager: ['pnpm'],
-    description: 'A proxy to use for outgoing HTTP requests.',
-  },
-  {
-    key: 'network-concurrency',
-    default: 'auto (16–64)',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Maximum number of concurrent HTTP(S) requests.',
-  },
-  {
-    key: 'fetch-retries',
-    default: '2',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Number of retries for failed registry fetches.',
-  },
-  {
-    key: 'fetch-retry-factor',
-    default: '10',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Exponential factor for retry backoff.',
-  },
-  {
-    key: 'fetch-retry-mintimeout',
-    default: '10000',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Minimum base timeout (in milliseconds) for retrying requests.',
-  },
-  {
-    key: 'fetch-retry-maxtimeout',
-    default: '60000',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Maximum fallback timeout (in milliseconds) for retries.',
-  },
-  {
-    key: 'fetch-timeout',
-    default: '60000',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Maximum time (in milliseconds) to wait for HTTP requests.',
-  },
-
-  // ── Peers ────────────────────────────────────────────────────────────────────
-  {
-    key: 'auto-install-peers',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Automatically install missing non-optional peer dependencies.',
-  },
-  {
-    key: 'dedupe-peer-dependents',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Deduplicate packages with peer dependencies where possible.',
-  },
-  {
-    key: 'strict-peer-dependencies',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Fail if there are missing or invalid peer dependencies.',
-  },
-  {
-    key: 'resolve-peers-from-workspace-root',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Use root workspace dependencies to resolve peer dependencies of other workspaces.',
-  },
-
-  // ── Scripts & Build ──────────────────────────────────────────────────────────
-  {
-    key: 'ignore-dep-scripts',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: "Do not execute scripts defined in dependencies, but do run scripts of the project's own packages.",
-  },
-  {
-    key: 'child-concurrency',
-    default: '5',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Maximum number of child processes to build `node_modules` in parallel.',
-  },
-  {
-    key: 'side-effects-cache',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Cache the results of `(pre/post)install` hooks and reuse them next time.',
-  },
-  {
-    key: 'side-effects-cache-readonly',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Only use the side effects cache if present; do not create new cache entries.',
-  },
-  {
-    key: 'unsafe-perm',
-    default: 'false (root) / true (non-root)',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Enable UID/GID switching when running package scripts.',
-  },
-
-  // ── Node.js version management ───────────────────────────────────────────────
-  {
-    key: 'use-node-version',
-    default: '""',
-    type: 'semver',
-    packageManager: ['pnpm'],
-    description:
-      'The exact Node.js version to use for the project runtime. pnpm will automatically download and use this version.',
-  },
-
-  // ── CLI & Output ─────────────────────────────────────────────────────────────
-  {
-    key: 'use-stderr',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Write all output to stderr.',
-  },
-  {
-    key: 'engine-strict',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'If `true`, pnpm will refuse to install packages incompatible with the current Node.js version.',
-  },
-
-  // ── Workspace ────────────────────────────────────────────────────────────────
-  {
-    key: 'recursive-install',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'When `true`, `pnpm install` behaves as if `pnpm install -r` was called.',
-  },
-  {
-    key: 'link-workspace-packages',
-    default: 'deep',
-    type: 'Boolean | "deep"',
-    packageManager: ['pnpm'],
-    validValues: ['true', 'false', 'deep'],
-    description:
-      'Link workspace packages instead of downloading from the registry.\n\n- `true`: Link directly-used workspace packages.\n- `deep`: Link all transitive workspace packages.\n- `false`: Never link workspace packages.',
-  },
-  {
-    key: 'prefer-workspace-packages',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, local packages from the workspace are always preferred over packages from the registry.',
-  },
-  {
-    key: 'shared-workspace-lockfile',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, a single `pnpm-lock.yaml` is created at the root of the workspace.',
-  },
-
-  // ── Misc ────────────────────────────────────────────────────────────────────
-  {
-    key: 'resolution-mode',
-    default: 'highest',
-    type: 'String',
-    packageManager: ['pnpm'],
-    validValues: ['highest', 'time-based', 'lowest-direct'],
-    description:
-      'Controls version resolution strategy.\n\n- `highest` *(default)*: The highest compatible version.\n- `time-based`: The latest version published before the direct dependency\'s publish time.\n- `lowest-direct`: The lowest version matching the range (for direct deps only).',
-  },
-  {
-    key: 'npm-path',
-    default: 'auto-detected',
-    type: 'path',
-    packageManager: ['pnpm'],
-    description: 'Path to the npm binary that pnpm should use for certain sub-commands.',
-  },
-  {
-    key: 'shell-emulator',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, use a JavaScript bash-like shell emulator for running scripts. Useful for Windows cross-platform compatibility.',
-  },
-  {
-    key: 'extend-node-path',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Set `NODE_PATH` in command shims.',
-  },
-  {
-    key: 'manage-package-manager-versions',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'Automatically download and use the pnpm version specified in `package.json#packageManager`.',
-  },
-  {
-    key: 'package-manager-strict',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'Fail if `package.json#packageManager` specifies a different package manager than pnpm.',
-  },
-  {
-    key: 'package-manager-strict-version',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description:
-      'When `true`, fail if the current pnpm version does not exactly match the version specified in `packageManager`.',
-  },
-  {
-    key: 'enable-pre-post-scripts',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Automatically run `pre<script>` and `post<script>` hooks.',
-  },
-  {
-    key: 'only-built-dependencies',
-    default: '[]',
-    type: 'String[]',
-    packageManager: ['pnpm'],
-    description:
-      'Allowlist of packages permitted to execute install scripts. If set, only packages in this list can run scripts.\n\nExample:\n```\nonly-built-dependencies[]=esbuild\n```',
-  },
-  {
-    key: 'never-built-dependencies',
-    default: '[]',
-    type: 'String[]',
-    packageManager: ['pnpm'],
-    description:
-      'Blocklist of packages whose install scripts should never be run.\n\nExample:\n```\nnever-built-dependencies[]=canvas\n```',
-  },
-  {
-    key: 'ignored-built-dependencies',
-    default: '[]',
-    type: 'String[]',
-    packageManager: ['pnpm'],
-    since: 10,
-    description: 'Packages whose scripts are silently skipped without warnings. (pnpm v10.1.0+)',
-  },
-  {
-    key: 'block-exotic-subdeps',
-    default: 'false (v10) / true (v11)',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    since: 10,
-    description:
-      'When `true`, only direct dependencies can use exotic sources (git URLs, tarball URLs). Transitive dependencies must come from the registry.\n\n> Default changed to `true` in **pnpm v11** to improve supply-chain security.',
-  },
-  {
-    key: 'dangerously-allow-all-builds',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    since: 10,
-    description:
-      'Allow all packages to run build scripts without approval. ⚠️ Disables supply-chain security controls. (pnpm v10.9.0+)',
-  },
-  {
-    key: 'verify-deps-before-run',
-    default: 'false',
-    type: 'String | Boolean',
-    packageManager: ['pnpm'],
-    validValues: ['install', 'warn', 'error', 'prompt'],
-    description:
-      'Check that `node_modules` is up to date before running scripts.\n\n- `install`: Auto-install if out of date.\n- `warn`: Print a warning.\n- `error`: Exit with an error.\n- `prompt`: Ask the user.',
-  },
-  {
-    key: 'prefer-symlinked-executables',
-    default: 'true',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: 'Create symlinks to executables in `node_modules/.bin` instead of command shims.',
-  },
-  {
-    key: 'dlx-cache-max-age',
-    default: '1440',
-    type: 'Number',
-    packageManager: ['pnpm'],
-    description: 'Time (in minutes) until the `pnpm dlx` cache expires. Default is 1 day.',
-  },
-  {
-    key: 'deploy-all-files',
-    default: 'false',
-    type: 'Boolean',
-    packageManager: ['pnpm'],
-    description: "Copy all package files when deploying (not just the files listed in the package's `files` field).",
-  },
-];
-
 // ─── Exports ──────────────────────────────────────────────────────────────────
 
-export const npmrcConfigs: NpmrcConfigEntry[] = [...npmConfigs, ...pnpmOnlyConfigs];
+// Note: pnpm v11+ reads non-sensitive settings from `pnpm-workspace.yaml`
+// (handled in `pnpmWorkspaceData.ts`). The keys retained here are the
+// authentication / registry / proxy / SSL settings that pnpm still reads
+// from `.npmrc` (https://pnpm.io/npmrc).
+export const npmrcConfigs: NpmrcConfigEntry[] = [...npmConfigs];
 
 /**
  * Fast lookup map: `${packageManager}:${key}` → config entry

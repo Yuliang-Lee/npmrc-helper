@@ -7,8 +7,11 @@
 
 A VSCode extension that provides **IntelliSense** for package manager configuration files — hover documentation, auto-completion, and diagnostics — supporting:
 
-- **`.npmrc`** — npm (v8 / v9 / v10 / v11) and pnpm (v10 / v11)
+- **`.npmrc`** — npm (v8 / v9 / v10 / v11) and pnpm (v10 / v11) **auth + registry only**
+- **`pnpm-workspace.yaml`** — pnpm v11+ everything else (camelCase keys, catalogs, overrides, workspace fields, per-subproject `packageConfigs`)
 - **`.yarnrc.yml`** — Yarn Berry (v2 / v3 / v4)
+
+> **Why both `.npmrc` and `pnpm-workspace.yaml`?** Starting with **pnpm v11**, `.npmrc` is reduced to **auth + registry** (tokens, scoped registries, `always-auth`). Every other setting (`hoistPattern`, `nodeLinker`, `saveExact`, proxies, SSL, …) lives in `pnpm-workspace.yaml` using **camelCase** keys. Per-subproject overrides previously placed in nested `.npmrc` files now go under `packageConfigs["<project-name>"]`. See [pnpm settings](https://pnpm.io/settings), [pnpm-workspace.yaml](https://pnpm.io/pnpm-workspace_yaml), and [pnpm .npmrc](https://pnpm.io/npmrc).
 
 ---
 
@@ -29,8 +32,12 @@ Hover over any config key to see a rich popup with:
 
 **`.npmrc`**
 - **Key completion**: Start typing to get suggestions filtered to the active package manager (npm or pnpm, auto-detected)
-- **Value completion**: After `key=`, suggestions for keys with a fixed set of valid values (e.g. `loglevel`, `access`, `audit-level`, `node-linker`)
+- **Value completion**: After `key=`, suggestions for keys with a fixed set of valid values (e.g. `loglevel`, `access`, `audit-level`)
 - Deprecated and removed keys appear at the bottom with a strikethrough
+
+**`pnpm-workspace.yaml`**
+- **Key completion**: All workspace fields (`packages`, `catalog`, `overrides`, `packageConfigs`, `allowBuilds`, …) plus all pnpm settings in **camelCase** (`nodeLinker`, `hoistPattern`, `autoInstallPeers`, `saveExact`, …)
+- **Value completion**: After `key: `, suggestions for keys with a fixed set of valid values (e.g. `nodeLinker`, `packageImportMethod`, `resolutionMode`)
 
 **`.yarnrc.yml`**
 - **Key completion**: All Yarn Berry configuration keys with docs
@@ -46,6 +53,14 @@ Hover over any config key to see a rich popup with:
 - Lines missing `=` → warning
 - Scoped entries (`@scope:registry=…`, `//host/:_authToken=…`) are correctly skipped
 
+**`pnpm-workspace.yaml`**
+- Unknown top-level keys → warning squiggle
+- **Migration hints**: kebab-case keys (e.g. `node-linker`) are flagged with the camelCase replacement (`nodeLinker`)
+- **`allowBuilds` migration**: `onlyBuiltDependencies`, `neverBuiltDependencies`, `ignoredBuiltDependencies`, `onlyBuiltDependenciesFile` are flagged with a hint to use `allowBuilds: { <pkg>: true | false }`
+- Deprecated keys → hint + strikethrough
+- Invalid enum values → warning
+- Nested keys (e.g. `catalog` entries) are skipped — only top-level keys are validated
+
 **`.yarnrc.yml`**
 - Unknown config keys → warning squiggle
 - Deprecated keys → hint + strikethrough
@@ -54,6 +69,14 @@ Hover over any config key to see a rich popup with:
 ### 🤖 Auto-detection: npm vs pnpm
 
 For `.npmrc` files, the extension automatically determines whether the project uses **npm** or **pnpm** by looking for `pnpm-lock.yaml` or `pnpm-workspace.yaml` in the directory tree. Completions and diagnostics are scoped accordingly.
+
+In pnpm v11+ projects, `.npmrc` is reserved for **auth + registry** only (`_authToken`, `//registry.../:_authToken`, `@scope:registry`, `_auth`, `always-auth`, `registry`). Move everything else — including proxies and SSL — to **`pnpm-workspace.yaml`**.
+
+### 📸 Preview — `pnpm-workspace.yaml`
+
+Hover documentation, camelCase key completion, enum value suggestions, and migration diagnostics for kebab-case keys:
+
+![pnpm-workspace.yaml IntelliSense](images/pnpm.png)
 
 ---
 
@@ -79,21 +102,73 @@ All keys from the [npm config documentation](https://docs.npmjs.com/cli/v11/usin
 
 ### pnpm (v10 / v11)
 
-All `.npmrc` keys from the [pnpm configuration docs](https://pnpm.io/npmrc), including:
+pnpm reads two files:
+
+- **`.npmrc`** — **auth + registry only** (`registry`, `_auth`, `_authToken`, `always-auth`, `@scope:registry=…`, `//host/:_authToken=…`).
+- **`pnpm-workspace.yaml`** — **everything else** (camelCase keys).
+
+#### Workspace-only fields
+
+| Key | Type | Notes |
+|-----|------|-------|
+| `packages` | String[] | Workspace package globs |
+| `catalog` / `catalogs` | Object | Versioned catalogs (pnpm v9+) |
+| `overrides` | Object | Force resolutions of any dep |
+| `patchedDependencies` | Object | Managed by `pnpm patch` |
+| `packageExtensions` | Object | Extend dep manifests |
+| `peerDependencyRules` | Object | Suppress / allow peer warnings |
+| `allowBuilds` | `Record<String, Boolean>` | **pnpm v11**: replaces `onlyBuiltDependencies`, `neverBuiltDependencies`, `ignoredBuiltDependencies`, `onlyBuiltDependenciesFile` |
+| `packageConfigs` | Object | **pnpm v11**: per-subproject overrides (replaces nested `.npmrc` files) |
+| `requiredScripts` | String[] | Scripts every workspace package must define |
+| `auditConfig` | Object | `pnpm audit` ignore-list |
+
+#### Selected camelCase settings (formerly kebab-case in `.npmrc`)
 
 | Key | Type | Default | Notes |
 |-----|------|---------|-------|
-| `store-dir` | path | `~/.local/share/pnpm/store` | |
-| `shamefully-hoist` | Boolean | `false` | |
-| `node-linker` | String | `isolated` | `isolated` / `hoisted` / `pnp` |
-| `prefer-frozen-lockfile` | Boolean | `true` | |
-| `auto-install-peers` | Boolean | `true` | |
-| `block-exotic-subdeps` | Boolean | `false` (v10) / `true` (v11) | |
-| `side-effects-cache` | Boolean | `true` | |
-| `use-node-version` | semver | — | |
+| `nodeLinker` | String | `isolated` | `isolated` / `hoisted` / `pnp` |
+| `hoistPattern` / `publicHoistPattern` | String[] | — | |
+| `shamefullyHoist` | Boolean | `false` | |
+| `autoInstallPeers` | Boolean | `true` | |
+| `preferFrozenLockfile` | Boolean | `true` | |
+| `blockExoticSubdeps` | Boolean | `false` (v10) / `true` (v11) | |
+| `useNodeVersion` | semver | `""` | |
+| `saveExact` / `savePrefix` | — | — | |
+| `httpsProxy` / `httpProxy` / `proxy` / `noproxy` | URL / String | — | Migrated from `.npmrc` |
+| `strictSsl` / `ca` / `cafile` / `cert` / `key` | — | — | Migrated from `.npmrc` |
 | … | … | … | |
 
-> pnpm-specific keys (e.g. `store-dir`, `hoist-pattern`) are only suggested when the project is detected as a pnpm workspace.
+#### Example
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+
+nodeLinker: isolated
+autoInstallPeers: true
+saveExact: true
+
+allowBuilds:
+  esbuild: true
+  "@swc/core": true
+  canvas: false
+
+packageConfigs:
+  "@my-org/web":
+    nodeLinker: hoisted
+    publicHoistPattern:
+      - "*types*"
+```
+
+```ini
+# .npmrc — auth + registry only
+registry=https://registry.npmjs.org/
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+@my-org:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=${GH_TOKEN}
+```
 
 ### Yarn Berry (v2 / v3 / v4)
 
