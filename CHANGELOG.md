@@ -2,6 +2,11 @@
 
 All notable changes to the "npmrc-helper" extension will be documented in this file.
 
+## [0.2.1] - 2026-08-11
+
+### Fixed
+- Stop the `pnpm-workspace` grammar from overriding YAML syntax highlighting in unrelated `.yml` and `.yaml` files.
+
 ## [0.2.0] - 2026-05-28
 
 ### Added

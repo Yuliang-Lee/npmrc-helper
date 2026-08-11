@@ -2,7 +2,7 @@
   "name": "npmrc-helper",
   "displayName": "npmrc Helper",
   "description": "Hover docs, auto-completion, and diagnostics for .npmrc (npm & pnpm), pnpm-workspace.yaml (pnpm v11+), and .yarnrc.yml (Yarn Berry)",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "xlaoyu",
   "engines": {
     "vscode": "^1.85.0"
@@ -90,8 +90,8 @@
       },
       {
         "language": "pnpm-workspace",
-        "scopeName": "source.yaml",
-        "path": "./syntaxes/yarnrc.tmLanguage.json"
+        "scopeName": "source.pnpm-workspace",
+        "path": "./syntaxes/pnpm-workspace.tmLanguage.json"
       }
     ]
   },
@@ -102,7 +102,8 @@
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "lint": "eslint src",
-    "package": "vsce package"
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -112,6 +113,7 @@
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
     "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^3.9.2",
     "eslint": "^10.0.3",
     "glob": "^10.3.10",
     "mocha": "^10.3.0",
