@@ -7,16 +7,20 @@ on:
     paths:
       - 'src/**'
       - 'package.json'
-      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
       - 'tsconfig.json'
+      - '.github/workflows/ci.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'src/**'
       - 'package.json'
-      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
       - 'tsconfig.json'
+      - '.github/workflows/ci.yml'
 
 jobs:
   test:
@@ -28,21 +32,26 @@ jobs:
         uses: actions/checkout@main
 
       - name: Setup Node.js
-        uses: actions/setup-node@main
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
-          cache: 'npm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: '11.28.12'
+          cache: true
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Compile
-        run: npm run compile
+        run: pnpm run compile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
         uses: coactions/setup-xvfb@main
         with:
-          run: npm test
+          run: pnpm run test
